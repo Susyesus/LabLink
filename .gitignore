@@ -54,6 +54,7 @@ Thumbs.db
 .env.local
 .env.*.local
 application-*.properties
+application.properties
 *.p12
 *.pem
 *.jks
