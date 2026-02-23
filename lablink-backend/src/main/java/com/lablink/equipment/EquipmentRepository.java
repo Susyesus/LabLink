@@ -12,28 +12,22 @@ import java.util.UUID;
 @Repository
 public interface EquipmentRepository extends JpaRepository<Equipment, UUID> {
 
-    @Query(value = """
-        SELECT e.* FROM equipment e
-        LEFT JOIN categories c ON e.category_id = c.id
-        WHERE (?1 IS NULL OR ?1 = '' 
-               OR e.name ILIKE CONCAT('%', CAST(?1 AS TEXT), '%') 
-               OR e.description ILIKE CONCAT('%', CAST(?1 AS TEXT), '%'))
-          AND (?2 IS NULL OR e.status = CAST(CAST(?2 AS TEXT) AS equipment_status))
-          AND (?3 IS NULL OR e.category_id = CAST(?3 AS UUID))
-        """, 
-        countQuery = """
-        SELECT count(*) FROM equipment e
-        WHERE (?1 IS NULL OR ?1 = '' 
-               OR e.name ILIKE CONCAT('%', CAST(?1 AS TEXT), '%') 
-               OR e.description ILIKE CONCAT('%', CAST(?1 AS TEXT), '%'))
-          AND (?2 IS NULL OR e.status = CAST(CAST(?2 AS TEXT) AS equipment_status))
-          AND (?3 IS NULL OR e.category_id = CAST(?3 AS UUID))
-        """,
-        nativeQuery = true)
+    /**
+     * Paginated search with optional filters.
+     * Uses LOWER() for case-insensitive name/description search.
+     */
+    @Query("""
+        SELECT e FROM Equipment e
+        JOIN FETCH e.category c
+        WHERE (:search   IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :search, '%'))
+                                 OR LOWER(e.description) LIKE LOWER(CONCAT('%', :search, '%')))
+          AND (:status     IS NULL OR e.status     = :status)
+          AND (:categoryId IS NULL OR c.id          = :categoryId)
+        """)
     Page<Equipment> findAllFiltered(
-            String search, 
-            String status, 
-            UUID categoryId, 
+            @Param("search")     String search,
+            @Param("status")     EquipmentStatus status,
+            @Param("categoryId") UUID categoryId,
             Pageable pageable
     );
 }

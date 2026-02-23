@@ -16,7 +16,7 @@ import java.util.UUID;
 public class EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
-    private final CategoryRepository categoryRepository;
+    private final CategoryRepository  categoryRepository;
 
     public EquipmentService(EquipmentRepository equipmentRepository,
                             CategoryRepository categoryRepository) {
@@ -24,20 +24,20 @@ public class EquipmentService {
         this.categoryRepository  = categoryRepository;
     }
 
-    public EquipmentPageResponse getAll(String search, EquipmentStatus status, UUID categoryId, int page, int limit) {
-    PageRequest pageable = PageRequest.of(page - 1, limit, Sort.by("name").ascending());
-    String statusStr = (status != null) ? status.name() : null;
+    public EquipmentPageResponse getAll(String search, String statusStr, UUID categoryId, int page, int limit) {
+        EquipmentStatus status = (statusStr != null) ? EquipmentStatus.valueOf(statusStr) : null;
+        PageRequest pageable = PageRequest.of(page - 1, limit, Sort.by("name").ascending());
 
-    // Just one call! result now contains content + total counts
-    Page<Equipment> result = equipmentRepository.findAllFiltered(search, statusStr, categoryId, pageable);
+        Page<Equipment> result = equipmentRepository.findAllFiltered(
+                (search != null && !search.isBlank()) ? search : null,
+                status, categoryId, pageable
+        );
 
-    List<EquipmentDto> dtos = result.getContent().stream()
-            .map(EquipmentDto::from)
-            .toList();
-            
-    return new EquipmentPageResponse(dtos, 
-           new PaginationDto(page, limit, result.getTotalElements(), result.getTotalPages()));
-}
+        List<EquipmentDto> dtos = result.getContent().stream().map(EquipmentDto::from).toList();
+        return new EquipmentPageResponse(dtos,
+                new PaginationDto(page, limit, result.getTotalElements(), result.getTotalPages()));
+    }
+
     public EquipmentDto getById(UUID id) {
         Equipment equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Equipment not found: " + id));
@@ -45,9 +45,7 @@ public class EquipmentService {
     }
 
     public List<CategoryDto> getCategories() {
-        return categoryRepository.findAll().stream()
-                .map(CategoryDto::from)
-                .toList();
+        return categoryRepository.findAll().stream().map(CategoryDto::from).toList();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -74,12 +72,11 @@ public class EquipmentService {
         Equipment equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Equipment not found: " + id));
 
-        if (request.getName() != null) equipment.setName(request.getName());
+        if (request.getName()        != null) equipment.setName(request.getName());
         if (request.getDescription() != null) equipment.setDescription(request.getDescription());
-        if (request.getStatus() != null) equipment.setStatus(request.getStatus());
-        if (request.getImageUrl() != null) equipment.setImageUrl(request.getImageUrl());
-        
-        if (request.getCategoryId() != null) {
+        if (request.getStatus()      != null) equipment.setStatus(request.getStatus());
+        if (request.getImageUrl()    != null) equipment.setImageUrl(request.getImageUrl());
+        if (request.getCategoryId()  != null) {
             Category cat = categoryRepository.findById(request.getCategoryId())
                     .orElseThrow(() -> BusinessException.notFound("DB-001", "Category not found"));
             equipment.setCategory(cat);

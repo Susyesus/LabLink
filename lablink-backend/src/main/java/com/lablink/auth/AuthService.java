@@ -38,11 +38,15 @@ public class AuthService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw BusinessException.conflict("DB-002", "Email is already registered");
         }
+        if (request.getIdNumber() != null && userRepository.existsByIdNumber(request.getIdNumber())) {
+            throw BusinessException.conflict("DB-003", "Student ID is already registered");
+        }
 
         User user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .idNumber(request.getIdNumber())
                 .role(UserRole.STUDENT)
                 .build();
 
@@ -60,7 +64,7 @@ public class AuthService {
     }
 
     public void logout(String email) {
-        // Stateless — client discards token. Extend here to revoke refresh token in DB.
+        // Stateless — client discards token.
     }
 
     private AuthResponse buildAuthResponse(User user) {
@@ -72,6 +76,7 @@ public class AuthService {
                         .id(user.getId())
                         .email(user.getEmail())
                         .name(user.getFullName())
+                        .idNumber(user.getIdNumber())
                         .role(user.getRole())
                         .build())
                 .token(accessToken)

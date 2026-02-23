@@ -15,8 +15,6 @@ public class AuthResponse {
         this.refreshToken = refreshToken;
     }
 
-    public UserDto getUserDto()       { return user; }
-    // Jackson serialises the field named "user"
     public UserDto getUser()          { return user; }
     public String getToken()          { return token; }
     public String getRefreshToken()   { return refreshToken; }
@@ -27,10 +25,10 @@ public class AuthResponse {
         private UserDto user;
         private String token, refreshToken;
 
-        public Builder user(UserDto v)         { this.user = v; return this; }
-        public Builder token(String v)         { this.token = v; return this; }
-        public Builder refreshToken(String v)  { this.refreshToken = v; return this; }
-        public AuthResponse build() { return new AuthResponse(user, token, refreshToken); }
+        public Builder user(UserDto v)        { this.user = v; return this; }
+        public Builder token(String v)        { this.token = v; return this; }
+        public Builder refreshToken(String v) { this.refreshToken = v; return this; }
+        public AuthResponse build()           { return new AuthResponse(user, token, refreshToken); }
     }
 
     // ── Nested UserDto ─────────────────────────────────────────
@@ -38,32 +36,36 @@ public class AuthResponse {
         private final UUID     id;
         private final String   email;
         private final String   name;
+        private final String   idNumber;
         private final UserRole role;
 
-        public UserDto(UUID id, String email, String name, UserRole role) {
-            this.id    = id;
-            this.email = email;
-            this.name  = name;
-            this.role  = role;
+        public UserDto(UUID id, String email, String name, String idNumber, UserRole role) {
+            this.id       = id;
+            this.email    = email;
+            this.name     = name;
+            this.idNumber = idNumber;
+            this.role     = role;
         }
 
-        public UUID getId()      { return id; }
-        public String getEmail() { return email; }
-        public String getName()  { return name; }
-        public UserRole getRole(){ return role; }
+        public UUID getId()        { return id; }
+        public String getEmail()   { return email; }
+        public String getName()    { return name; }
+        public String getIdNumber(){ return idNumber; }
+        public UserRole getRole()  { return role; }
 
         public static Builder builder() { return new Builder(); }
 
         public static class Builder {
             private UUID id;
-            private String email, name;
+            private String email, name, idNumber;
             private UserRole role;
 
-            public Builder id(UUID v)       { this.id = v; return this; }
-            public Builder email(String v)  { this.email = v; return this; }
-            public Builder name(String v)   { this.name = v; return this; }
-            public Builder role(UserRole v) { this.role = v; return this; }
-            public UserDto build() { return new UserDto(id, email, name, role); }
+            public Builder id(UUID v)         { this.id = v; return this; }
+            public Builder email(String v)    { this.email = v; return this; }
+            public Builder name(String v)     { this.name = v; return this; }
+            public Builder idNumber(String v) { this.idNumber = v; return this; }
+            public Builder role(UserRole v)   { this.role = v; return this; }
+            public UserDto build()            { return new UserDto(id, email, name, idNumber, role); }
         }
     }
 }

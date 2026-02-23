@@ -25,8 +25,8 @@ public class Equipment {
     @Column(name = "serial_number", unique = true, length = 100)
     private String serialNumber;
 
-@Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "equipment_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private EquipmentStatus status = EquipmentStatus.AVAILABLE;
 
     @Column(name = "image_url", length = 500)

@@ -33,7 +33,7 @@ public class BorrowRecord {
     private Instant actualReturnDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "borrow_status", nullable = false)
+    @Column(nullable = false, length = 20)
     private BorrowStatus status = BorrowStatus.ACTIVE;
 
     @Column(columnDefinition = "text")

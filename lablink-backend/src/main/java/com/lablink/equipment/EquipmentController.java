@@ -23,7 +23,7 @@ public class EquipmentController {
     @GetMapping
     public ResponseEntity<ApiResponse<EquipmentPageResponse>> getAll(
             @RequestParam(required = false)              String search,
-            @RequestParam(required = false)              EquipmentStatus status,
+            @RequestParam(required = false)              String status,
             @RequestParam(required = false)              UUID   categoryId,
             @RequestParam(defaultValue = "1")            int    page,
             @RequestParam(name = "limit", defaultValue = "20") int limit) {
