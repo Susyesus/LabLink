@@ -5,17 +5,18 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useAuth } from '@/hooks/useAuth';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 const studentNav = [
-  { to: '/catalog',  label: 'Equipment',    icon: LayoutGrid },
-  { to: '/my-items', label: 'My Borrows',   icon: ClipboardList },
-  { to: '/profile',  label: 'Profile',      icon: User },
+  { to: '/catalog',  label: 'Equipment',  icon: LayoutGrid },
+  { to: '/my-items', label: 'My Borrows', icon: ClipboardList },
+  { to: '/profile',  label: 'Profile',    icon: User },
 ];
 
 const adminNav = [
-  { to: '/admin',           label: 'Dashboard',  icon: LayoutGrid },
-  { to: '/admin/equipment', label: 'Inventory',  icon: Package },
-  { to: '/admin/borrows',   label: 'Borrows',    icon: ClipboardList },
+  { to: '/admin',           label: 'Dashboard', icon: LayoutGrid },
+  { to: '/admin/equipment', label: 'Inventory', icon: Package },
+  { to: '/admin/borrows',   label: 'Borrows',   icon: ClipboardList },
 ];
 
 export function Sidebar() {
@@ -31,7 +32,7 @@ export function Sidebar() {
         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-lab-primary/20 border border-lab-primary/30">
           <FlaskConical size={16} className="text-lab-primary" />
         </div>
-        <span className="font-display font-700 text-lg text-lab-text tracking-tight">LabLink</span>
+        <span className="font-display font-bold text-lg text-lab-text tracking-tight">LabLink</span>
         {user?.role === 'ADMIN' && (
           <span className="ml-auto flex items-center gap-1 text-[10px] font-mono font-medium
                            text-lab-warning bg-lab-warning/10 border border-lab-warning/20
@@ -43,7 +44,7 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        <p className="section-label px-3 mb-3">
+        <p className="text-[10px] font-mono font-medium text-lab-muted uppercase tracking-widest px-3 mb-3">
           {user?.role === 'ADMIN' ? 'Management' : 'Navigation'}
         </p>
         {nav.map(({ to, label, icon: Icon }) => (
@@ -73,8 +74,9 @@ export function Sidebar() {
 
       {/* User footer */}
       <div className="px-3 py-4 border-t border-lab-border space-y-1">
+        {/* User card */}
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-lab-bg border border-lab-border mb-2">
-          <div className="w-7 h-7 rounded-full bg-lab-primary/20 border border-lab-primary/30 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-full bg-lab-primary/20 border border-lab-primary/30 flex items-center justify-center flex-shrink-0">
             <span className="text-xs font-display font-bold text-lab-primary">
               {user?.name.charAt(0).toUpperCase()}
             </span>
@@ -83,7 +85,10 @@ export function Sidebar() {
             <p className="text-xs font-body font-medium text-lab-text truncate">{user?.name}</p>
             <p className="text-[10px] font-mono text-lab-muted truncate">{user?.email}</p>
           </div>
+          {/* Theme toggle tucked beside user info */}
+          <ThemeToggle />
         </div>
+
         <button
           onClick={logout}
           className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-body

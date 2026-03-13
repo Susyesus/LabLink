@@ -139,3 +139,11 @@ export interface EquipmentQueryParams {
   status?: EquipmentStatus;
   categoryId?: string;
 }
+
+export interface AdminRegisterRequest {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  adminSecret: string;
+}

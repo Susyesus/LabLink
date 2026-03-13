@@ -4,6 +4,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── CSS Custom Properties — Theme Tokens ───────────────────── */
+:root,
+html.dark {
+  --color-bg:      #0D0F14;
+  --color-surface: #161B26;
+  --color-border:  #232A3A;
+  --color-muted:   #8A94A6;
+  --color-text:    #E8ECF4;
+  --color-primary: #3B82F6;
+  --color-accent:  #06B6D4;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger:  #EF4444;
+  --scrollbar-track: #0D0F14;
+  --scrollbar-thumb: #232A3A;
+}
+
+html.light {
+  --color-bg:      #F0F4FA;
+  --color-surface: #FFFFFF;
+  --color-border:  #D1D9E6;
+  --color-muted:   #64748B;
+  --color-text:    #1A2033;
+  --color-primary: #2563EB;
+  --color-accent:  #0891B2;
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-danger:  #DC2626;
+  --scrollbar-track: #E2E8F0;
+  --scrollbar-thumb: #CBD5E1;
+}
+
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
@@ -14,29 +46,25 @@
   }
 
   body {
-    background-color: #0D0F14;
-    color: #E8ECF4;
+    background-color: var(--color-bg);
+    color: var(--color-text);
     font-family: 'DM Sans', sans-serif;
     font-size: 15px;
     line-height: 1.6;
     min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #0D0F14; }
-  ::-webkit-scrollbar-thumb { background: #232A3A; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #3B82F6; }
+  ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
 
-  /* Selection */
-  ::selection { background: rgba(59,130,246,0.25); color: #E8ECF4; }
+  ::selection { background: rgba(59,130,246,0.25); color: var(--color-text); }
 }
 
 @layer components {
-  /* Grid noise texture overlay */
-  .noise-bg {
-    position: relative;
-  }
+  .noise-bg { position: relative; }
   .noise-bg::before {
     content: '';
     position: absolute;
@@ -48,62 +76,82 @@
   }
 
   .card {
-    @apply bg-lab-surface border border-lab-border rounded-xl;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    @apply rounded-xl;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
   }
 
   .btn-primary {
-    @apply bg-lab-primary hover:bg-blue-500 text-white font-display font-semibold
-           px-5 py-2.5 rounded-lg transition-all duration-200 text-sm
+    background-color: var(--color-primary);
+    color: white;
+    @apply font-display font-semibold px-5 py-2.5 rounded-lg transition-all duration-200 text-sm
            disabled:opacity-40 disabled:cursor-not-allowed
-           focus:outline-none focus:ring-2 focus:ring-lab-primary/50;
+           focus:outline-none focus:ring-2;
+    --tw-ring-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  }
+  .btn-primary:hover:not(:disabled) {
+    filter: brightness(1.1);
   }
 
   .btn-ghost {
-    @apply bg-transparent hover:bg-lab-border text-lab-text font-display font-medium
-           px-5 py-2.5 rounded-lg transition-all duration-200 text-sm
-           focus:outline-none focus:ring-2 focus:ring-lab-border;
+    background-color: transparent;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    @apply font-display font-medium px-5 py-2.5 rounded-lg transition-all duration-200 text-sm
+           focus:outline-none focus:ring-2;
   }
+  .btn-ghost:hover { background-color: var(--color-border); }
 
   .btn-danger {
-    @apply bg-lab-danger/10 hover:bg-lab-danger/20 text-lab-danger font-display font-medium
-           px-5 py-2.5 rounded-lg transition-all duration-200 text-sm border border-lab-danger/20
-           focus:outline-none focus:ring-2 focus:ring-lab-danger/30;
+    background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
+    color: var(--color-danger);
+    border: 1px solid color-mix(in srgb, var(--color-danger) 20%, transparent);
+    @apply font-display font-medium px-5 py-2.5 rounded-lg transition-all duration-200 text-sm
+           focus:outline-none focus:ring-2;
+  }
+  .btn-danger:hover {
+    background-color: color-mix(in srgb, var(--color-danger) 20%, transparent);
   }
 
   .input-field {
-    @apply w-full bg-lab-bg border border-lab-border rounded-lg px-4 py-2.5
-           text-lab-text placeholder:text-lab-muted text-sm font-body
-           focus:outline-none focus:ring-2 focus:ring-lab-primary/40 focus:border-lab-primary
+    width: 100%;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    @apply rounded-lg px-4 py-2.5 text-sm font-body
+           focus:outline-none focus:ring-2
            transition-all duration-200;
+  }
+  .input-field::placeholder { color: var(--color-muted); }
+  .input-field:focus {
+    border-color: var(--color-primary);
+    --tw-ring-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
   }
 
   .badge-available {
-    @apply inline-flex items-center gap-1.5 text-xs font-mono font-medium
-           text-lab-success bg-lab-success/10 border border-lab-success/20
-           px-2.5 py-0.5 rounded-full;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium;
+    background: color-mix(in srgb, var(--color-success) 15%, transparent);
+    color: var(--color-success);
+    border: 1px solid color-mix(in srgb, var(--color-success) 25%, transparent);
   }
-
   .badge-unavailable {
-    @apply inline-flex items-center gap-1.5 text-xs font-mono font-medium
-           text-lab-danger bg-lab-danger/10 border border-lab-danger/20
-           px-2.5 py-0.5 rounded-full;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium;
+    background: color-mix(in srgb, var(--color-danger) 15%, transparent);
+    color: var(--color-danger);
+    border: 1px solid color-mix(in srgb, var(--color-danger) 25%, transparent);
   }
-
   .badge-maintenance {
-    @apply inline-flex items-center gap-1.5 text-xs font-mono font-medium
-           text-lab-warning bg-lab-warning/10 border border-lab-warning/20
-           px-2.5 py-0.5 rounded-full;
-  }
-
-  .section-label {
-    @apply text-xs font-mono font-medium tracking-widest uppercase text-lab-muted;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium;
+    background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+    color: var(--color-warning);
+    border: 1px solid color-mix(in srgb, var(--color-warning) 25%, transparent);
   }
 }
 
-/* Stagger animation helpers */
-.stagger-1 { animation-delay: 0.05s; }
-.stagger-2 { animation-delay: 0.1s; }
-.stagger-3 { animation-delay: 0.15s; }
-.stagger-4 { animation-delay: 0.2s; }
-.stagger-5 { animation-delay: 0.25s; }
-.stagger-6 { animation-delay: 0.3s; }
+@layer utilities {
+  @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-in  { animation: fadeIn 0.4s ease forwards; }
+  .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+}

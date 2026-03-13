@@ -141,3 +141,4 @@ export function ConfirmDialog({
     </Modal>
   );
 }
+export { ThemeToggle } from './ThemeToggle';

@@ -55,7 +55,7 @@ apiClient.interceptors.response.use(
 );
 
 /**
- * Extracts the error message from a failed ApiResponse.
+ * Extracts the top-level error message from a failed ApiResponse.
  * Falls back to a generic message if structure is unexpected.
  */
 export function extractApiError(error: unknown): string {
@@ -65,4 +65,25 @@ export function extractApiError(error: unknown): string {
     if (error.message) return error.message;
   }
   return 'An unexpected error occurred. Please try again.';
+}
+
+/**
+ * Extracts field-level validation errors from a VALID-001 backend response.
+ * Returns a map of { fieldName: errorMessage } or null if not a field-error response.
+ *
+ * Backend shape: { error: { code: "VALID-001", details: { email: "...", fullName: "..." } } }
+ */
+export function extractFieldErrors(error: unknown): Record<string, string> | null {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data as ApiResponse<null> | undefined;
+    if (
+      data?.error?.code === 'VALID-001' &&
+      data.error.details &&
+      typeof data.error.details === 'object' &&
+      !Array.isArray(data.error.details)
+    ) {
+      return data.error.details as Record<string, string>;
+    }
+  }
+  return null;
 }

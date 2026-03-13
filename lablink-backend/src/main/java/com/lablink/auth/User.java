@@ -2,8 +2,6 @@ package com.lablink.auth;
 
 import com.lablink.borrow.BorrowRecord;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,8 +32,7 @@ public class User implements UserDetails {
     private String idNumber;
 
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    @Column(name = "role", nullable = false, columnDefinition = "user_role")
+    @Column(nullable = false, length = 20)
     private UserRole role = UserRole.STUDENT;
 
     @Column(name = "created_at", nullable = false, updatable = false)

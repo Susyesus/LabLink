@@ -24,13 +24,22 @@ public class EquipmentService {
         this.categoryRepository  = categoryRepository;
     }
 
+    @Transactional(readOnly = true)
     public EquipmentPageResponse getAll(String search, String statusStr, UUID categoryId, int page, int limit) {
-        EquipmentStatus status = (statusStr != null) ? EquipmentStatus.valueOf(statusStr) : null;
+        if (statusStr != null) {
+            try { EquipmentStatus.valueOf(statusStr); }
+            catch (IllegalArgumentException e) {
+                throw BusinessException.badRequest("VALID-003", "Invalid status value: " + statusStr);
+            }
+        }
+
         PageRequest pageable = PageRequest.of(page - 1, limit, Sort.by("name").ascending());
 
         Page<Equipment> result = equipmentRepository.findAllFiltered(
                 (search != null && !search.isBlank()) ? search : null,
-                status, categoryId, pageable
+                statusStr,
+                categoryId,
+                pageable
         );
 
         List<EquipmentDto> dtos = result.getContent().stream().map(EquipmentDto::from).toList();
@@ -38,12 +47,18 @@ public class EquipmentService {
                 new PaginationDto(page, limit, result.getTotalElements(), result.getTotalPages()));
     }
 
+    @Transactional(readOnly = true)
     public EquipmentDto getById(UUID id) {
         Equipment equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Equipment not found: " + id));
         return EquipmentDto.from(equipment);
     }
 
+    /**
+     * No @Transactional here — PgBouncer (transaction pooler) destroys prepared
+     * statements on COMMIT. A bare SELECT needs no transaction; Spring Data JPA
+     * executes it in autoCommit mode, which never triggers a COMMIT over the pool.
+     */
     public List<CategoryDto> getCategories() {
         return categoryRepository.findAll().stream().map(CategoryDto::from).toList();
     }

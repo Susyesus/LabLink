@@ -2,7 +2,7 @@ package com.lablink.auth.dto;
 
 import jakarta.validation.constraints.*;
 
-public class RegisterRequest {
+public class AdminRegisterRequest {
 
     @NotBlank(message = "Full name is required")
     private String fullName;
@@ -21,12 +21,9 @@ public class RegisterRequest {
     @NotBlank(message = "Please confirm your password")
     private String confirmPassword;
 
-    // Optional — admin accounts won't have a student ID
-    @Pattern(
-        regexp = "^\\d{2}-\\d{4}-\\d{3}$",
-        message = "Student ID must follow the format XX-XXXX-XXX (e.g. 21-1234-567)"
-    )
-    private String idNumber;
+    /** Secret key to authorize admin account creation. Set via ADMIN_REGISTER_SECRET env var. */
+    @NotBlank(message = "Admin secret key is required")
+    private String adminSecret;
 
     public String getFullName()              { return fullName; }
     public void setFullName(String v)        { this.fullName = v; }
@@ -36,6 +33,6 @@ public class RegisterRequest {
     public void setPassword(String v)        { this.password = v; }
     public String getConfirmPassword()       { return confirmPassword; }
     public void setConfirmPassword(String v) { this.confirmPassword = v; }
-    public String getIdNumber()              { return idNumber; }
-    public void setIdNumber(String v)        { this.idNumber = v; }
+    public String getAdminSecret()           { return adminSecret; }
+    public void setAdminSecret(String v)     { this.adminSecret = v; }
 }

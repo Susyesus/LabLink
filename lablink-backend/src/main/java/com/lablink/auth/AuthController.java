@@ -1,8 +1,6 @@
 package com.lablink.auth;
 
-import com.lablink.auth.dto.AuthResponse;
-import com.lablink.auth.dto.LoginRequest;
-import com.lablink.auth.dto.RegisterRequest;
+import com.lablink.auth.dto.*;
 import com.lablink.common.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,11 +18,23 @@ public class AuthController {
         this.authService = authService;
     }
 
+    /** Student registration — role is always STUDENT. */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(
             @Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.ok(authService.register(request)));
+    }
+
+    /**
+     * Admin registration — requires ADMIN_REGISTER_SECRET in request body.
+     * Endpoint is public but gated by the secret key.
+     */
+    @PostMapping("/register-admin")
+    public ResponseEntity<ApiResponse<AuthResponse>> registerAdmin(
+            @Valid @RequestBody AdminRegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.ok(authService.registerAdmin(request)));
     }
 
     @PostMapping("/login")

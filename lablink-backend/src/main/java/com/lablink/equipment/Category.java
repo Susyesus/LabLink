@@ -1,7 +1,6 @@
 package com.lablink.equipment;
 
 import jakarta.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,9 +16,6 @@ public class Category {
 
     @Column(columnDefinition = "text")
     private String description;
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Equipment> equipment;
 
     public Category() {}
 

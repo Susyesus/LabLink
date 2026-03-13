@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FlaskConical, Mail, Lock, User, Eye, EyeOff, Hash } from 'lucide-react';
+import { FlaskConical, Mail, Lock, User, Eye, EyeOff, Hash, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Spinner } from '@/components/ui';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 interface FormErrors {
   fullName?: string;
@@ -17,34 +18,55 @@ export default function RegisterPage() {
   const [form, setForm] = useState({
     fullName: '', email: '', idNumber: '', password: '', confirmPassword: '',
   });
-  const [showPw, setShowPw]     = useState(false);
-  const [errors, setErrors]     = useState<FormErrors>({});
+  const [showPw, setShowPw]   = useState(false);
+  const [errors, setErrors]   = useState<FormErrors>({});
+  // Top-level API error (e.g. "Email is already registered")
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const set = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm(v => ({ ...v, [field]: e.target.value }));
     setErrors(v => ({ ...v, [field]: undefined }));
+    setApiError(null);
   };
 
+  /** Client-side validation — returns true if all fields pass */
   const validate = (): boolean => {
     const e: FormErrors = {};
-    if (!form.fullName.trim())       e.fullName       = 'Full name is required';
-    if (!form.email.trim())          e.email          = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email address';
-    if (form.password.length < 8)    e.password       = 'Password must be at least 8 characters';
-    if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match';
+    if (!form.fullName.trim())
+      e.fullName = 'Full name is required';
+    if (!form.email.trim())
+      e.email = 'Email is required';
+    else if (!/^[a-zA-Z0-9._%+-]+\.[a-zA-Z0-9._%+-]+@cit\.edu$/.test(form.email))
+      e.email = 'Enter a valid CIT email (e.g. juan.dela@cit.edu)';
+    if (form.password.length < 8)
+      e.password = 'Password must be at least 8 characters';
+    if (form.password !== form.confirmPassword)
+      e.confirmPassword = 'Passwords do not match';
     setErrors(e);
     return !Object.keys(e).length;
   };
 
-  const handleSubmit = (ev: React.FormEvent) => {
+  const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (validate()) register(form);
+    setApiError(null);
+    if (!validate()) return;
+
+    const result = await register(form);
+
+    if (result && typeof result === 'object') {
+      // Backend returned VALID-001 field-level errors — merge into inline display
+      setErrors(prev => ({ ...prev, ...result }));
+    } else if (result === null) {
+      // Non-field API error (e.g. email conflict) — already toasted, show generic banner
+      setApiError('Registration failed. Please check your details and try again.');
+    }
+    // result === undefined means success — useAuth already navigated away
   };
 
-  const fields = [
-    { key: 'fullName',        label: 'Full Name',        icon: User,    type: 'text',     placeholder: 'Juan Dela Cruz',     autoComplete: 'name' },
-    { key: 'email',           label: 'University Email', icon: Mail,    type: 'email',    placeholder: 'student@cit.edu',    autoComplete: 'email' },
-    { key: 'idNumber',        label: 'Student ID',       icon: Hash,    type: 'text',     placeholder: '21-XXXX-XXX',        autoComplete: 'off' },
+  const textFields = [
+    { key: 'fullName',  label: 'Full Name',        icon: User, type: 'text',  placeholder: 'Juan Dela Cruz',  autoComplete: 'name' },
+    { key: 'email',     label: 'University Email',  icon: Mail, type: 'text',  placeholder: 'juan.dela@cit.edu', autoComplete: 'username' },
+    { key: 'idNumber',  label: 'Student ID',        icon: Hash, type: 'text',  placeholder: '21-XXXX-XXX',     autoComplete: 'off' },
   ] as const;
 
   return (
@@ -65,8 +87,17 @@ export default function RegisterPage() {
         </div>
 
         <div className="card p-8">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {fields.map(({ key, label, icon: Icon, type, placeholder, autoComplete }) => (
+          {/* API-level error banner */}
+          {apiError && (
+            <div className="flex items-start gap-2.5 bg-lab-danger/10 border border-lab-danger/30
+                            text-lab-danger rounded-lg px-4 py-3 mb-5 text-sm">
+              <AlertCircle size={15} className="mt-0.5 shrink-0" />
+              <span>{apiError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            {textFields.map(({ key, label, icon: Icon, type, placeholder, autoComplete }) => (
               <div key={key}>
                 <label className="block text-xs font-mono font-medium text-lab-muted mb-2 tracking-wider uppercase">
                   {label}
@@ -136,11 +167,16 @@ export default function RegisterPage() {
 
           <p className="text-center text-xs text-lab-muted mt-6">
             Already have an account?{' '}
-            <Link to="/login" className="text-lab-primary hover:text-blue-400 transition-colors font-medium">
-              Sign in
-            </Link>
+            <Link to="/login" className="text-lab-primary hover:underline font-medium">Sign in</Link>
+            {' · '}
+            <Link to="/register-admin" className="text-lab-primary hover:underline font-medium">Admin registration</Link>
           </p>
         </div>
+      </div>
+
+      {/* Theme toggle — top right */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
       </div>
     </div>
   );

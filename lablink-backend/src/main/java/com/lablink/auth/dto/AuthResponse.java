@@ -1,5 +1,6 @@
 package com.lablink.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lablink.auth.UserRole;
 import java.util.UUID;
 
@@ -15,23 +16,23 @@ public class AuthResponse {
         this.refreshToken = refreshToken;
     }
 
-    public UserDto getUser()          { return user; }
-    public String getToken()          { return token; }
-    public String getRefreshToken()   { return refreshToken; }
+    // Single explicit @JsonProperty to avoid duplicate keys
+    @JsonProperty("user")
+    public UserDto getUser()        { return user; }
+    public String getToken()        { return token; }
+    public String getRefreshToken() { return refreshToken; }
 
-    public static Builder builder()   { return new Builder(); }
+    public static Builder builder() { return new Builder(); }
 
     public static class Builder {
         private UserDto user;
         private String token, refreshToken;
-
         public Builder user(UserDto v)        { this.user = v; return this; }
         public Builder token(String v)        { this.token = v; return this; }
         public Builder refreshToken(String v) { this.refreshToken = v; return this; }
         public AuthResponse build()           { return new AuthResponse(user, token, refreshToken); }
     }
 
-    // ── Nested UserDto ─────────────────────────────────────────
     public static class UserDto {
         private final UUID     id;
         private final String   email;
@@ -59,7 +60,6 @@ public class AuthResponse {
             private UUID id;
             private String email, name, idNumber;
             private UserRole role;
-
             public Builder id(UUID v)         { this.id = v; return this; }
             public Builder email(String v)    { this.email = v; return this; }
             public Builder name(String v)     { this.name = v; return this; }

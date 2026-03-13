@@ -1,10 +1,9 @@
 package com.lablink.auth;
 
-import com.lablink.auth.dto.AuthResponse;
-import com.lablink.auth.dto.LoginRequest;
-import com.lablink.auth.dto.RegisterRequest;
+import com.lablink.auth.dto.*;
 import com.lablink.exception.BusinessException;
 import com.lablink.security.JwtService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +18,9 @@ public class AuthService {
     private final PasswordEncoder       passwordEncoder;
     private final JwtService            jwtService;
     private final AuthenticationManager authenticationManager;
+
+    @Value("${app.admin.register-secret:lablink-admin-secret-change-me}")
+    private String adminRegisterSecret;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
@@ -38,7 +40,8 @@ public class AuthService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw BusinessException.conflict("DB-002", "Email is already registered");
         }
-        if (request.getIdNumber() != null && userRepository.existsByIdNumber(request.getIdNumber())) {
+        if (request.getIdNumber() != null && !request.getIdNumber().isBlank()
+                && userRepository.existsByIdNumber(request.getIdNumber())) {
             throw BusinessException.conflict("DB-003", "Student ID is already registered");
         }
 
@@ -48,6 +51,29 @@ public class AuthService {
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .idNumber(request.getIdNumber())
                 .role(UserRole.STUDENT)
+                .build();
+
+        userRepository.save(user);
+        return buildAuthResponse(user);
+    }
+
+    @Transactional
+    public AuthResponse registerAdmin(AdminRegisterRequest request) {
+        if (!adminRegisterSecret.equals(request.getAdminSecret())) {
+            throw BusinessException.badRequest("AUTH-004", "Invalid admin secret key");
+        }
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw BusinessException.badRequest("VALID-002", "Passwords do not match");
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw BusinessException.conflict("DB-002", "Email is already registered");
+        }
+
+        User user = User.builder()
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .role(UserRole.ADMIN)
                 .build();
 
         userRepository.save(user);
