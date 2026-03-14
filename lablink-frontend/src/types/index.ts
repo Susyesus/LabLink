@@ -147,3 +147,25 @@ export interface AdminRegisterRequest {
   confirmPassword: string;
   adminSecret: string;
 }
+
+// ── User Profile ──────────────────────────────────────────────
+export interface UserProfile {
+  id: string;
+  email: string;
+  fullName: string;
+  idNumber: string | null;
+  role: UserRole;
+  hasPhoto: boolean;
+  createdAt: string;
+}
+
+export interface UpdateProfileRequest {
+  fullName: string;
+  idNumber?: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

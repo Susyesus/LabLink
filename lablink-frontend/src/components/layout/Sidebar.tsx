@@ -1,7 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import {
   FlaskConical, LayoutGrid, Package, ClipboardList,
-  User, LogOut, ChevronRight, Shield
+  User, LogOut, ChevronRight, Shield, Settings
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,6 +12,7 @@ const studentNav = [
   { to: '/catalog',  label: 'Equipment',  icon: LayoutGrid },
   { to: '/my-items', label: 'My Borrows', icon: ClipboardList },
   { to: '/profile',  label: 'Profile',    icon: User },
+  { to: '/settings', label: 'Settings',   icon: Settings },
 ];
 
 const adminNav = [
@@ -23,6 +25,17 @@ export function Sidebar() {
   const user = useAuthStore((s) => s.user);
   const { logout } = useAuth();
   const nav = user?.role === 'ADMIN' ? adminNav : studentNav;
+  const [photoSrc, setPhotoSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('ll_access_token');
+    if (!token) return;
+    const base = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api/v1';
+    fetch(`${base}/users/me/photo`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.ok ? r.blob() : Promise.reject())
+      .then(b => setPhotoSrc(URL.createObjectURL(b)))
+      .catch(() => setPhotoSrc(null));
+  }, [user?.id]);
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-lab-surface border-r border-lab-border
@@ -76,10 +89,11 @@ export function Sidebar() {
       <div className="px-3 py-4 border-t border-lab-border space-y-1">
         {/* User card */}
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-lab-bg border border-lab-border mb-2">
-          <div className="w-7 h-7 rounded-full bg-lab-primary/20 border border-lab-primary/30 flex items-center justify-center flex-shrink-0">
-            <span className="text-xs font-display font-bold text-lab-primary">
-              {user?.name.charAt(0).toUpperCase()}
-            </span>
+          <div className="w-7 h-7 rounded-full bg-lab-primary/20 border border-lab-primary/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
+            {photoSrc
+              ? <img src={photoSrc} alt="avatar" className="w-full h-full object-cover" />
+              : <span className="text-xs font-display font-bold text-lab-primary">{user?.name.charAt(0).toUpperCase()}</span>
+            }
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-body font-medium text-lab-text truncate">{user?.name}</p>

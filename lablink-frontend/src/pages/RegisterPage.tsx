@@ -38,6 +38,10 @@ export default function RegisterPage() {
       e.email = 'Email is required';
     else if (!/^[a-zA-Z0-9._%+-]+\.[a-zA-Z0-9._%+-]+@cit\.edu$/.test(form.email))
       e.email = 'Enter a valid CIT email (e.g. juan.dela@cit.edu)';
+    if (!form.idNumber.trim())
+      e.idNumber = 'Student ID is required';
+    else if (!/^\d{2}-\d{4}-\d{3}$/.test(form.idNumber.trim()))
+      e.idNumber = 'Enter a valid Student ID (e.g. 21-1234-567)';
     if (form.password.length < 8)
       e.password = 'Password must be at least 8 characters';
     if (form.password !== form.confirmPassword)

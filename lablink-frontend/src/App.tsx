@@ -14,6 +14,7 @@ import ProfilePage          from '@/pages/ProfilePage';
 import AdminDashboardPage   from '@/pages/AdminDashboardPage';
 import AdminEquipmentPage   from '@/pages/AdminEquipmentPage';
 import AdminBorrowsPage     from '@/pages/AdminBorrowsPage';
+import SettingsPage         from '@/pages/SettingsPage';
 
 export default function App() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="/catalog/:id"    element={<EquipmentDetailPage />} />
             <Route path="/my-items"       element={<MyBorrowsPage />} />
             <Route path="/profile"        element={<ProfilePage />} />
+            <Route path="/settings"       element={<SettingsPage />} />
             {/* Admin-only routes */}
             <Route element={<AdminRoute />}>
               <Route path="/admin"           element={<AdminDashboardPage />} />

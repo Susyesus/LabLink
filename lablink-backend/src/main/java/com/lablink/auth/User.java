@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -32,11 +34,25 @@ public class User implements UserDetails {
     private String idNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM) // <-- This is the magic line that fixes the crash
+    @Column(nullable = false, columnDefinition = "user_role")
     private UserRole role = UserRole.STUDENT;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
+
+    /**
+     * Profile photo stored as raw bytes (bytea in PostgreSQL).
+     * Kept out of default fetch to avoid loading large BLOBs on every query.
+     * Use userRepository.findById() inside @Transactional to access it.
+     */
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "photo_data", columnDefinition = "bytea")
+    private byte[] photoData;
+
+    /** MIME type of the stored photo — "image/jpeg" or "image/png". */
+    @Column(name = "photo_type", length = 10)
+    private String photoType;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<BorrowRecord> borrowRecords;
@@ -44,30 +60,34 @@ public class User implements UserDetails {
     public User() {}
 
     // ── Getters / Setters ──────────────────────────────────────
-    public UUID getId()                  { return id; }
-    public String getEmail()             { return email; }
-    public void setEmail(String v)       { this.email = v; }
-    public String getPasswordHash()      { return passwordHash; }
-    public void setPasswordHash(String v){ this.passwordHash = v; }
-    public String getFullName()          { return fullName; }
-    public void setFullName(String v)    { this.fullName = v; }
-    public String getIdNumber()          { return idNumber; }
-    public void setIdNumber(String v)    { this.idNumber = v; }
-    public UserRole getRole()            { return role; }
-    public void setRole(UserRole v)      { this.role = v; }
-    public Instant getCreatedAt()        { return createdAt; }
+    public UUID    getId()                   { return id; }
+    public String  getEmail()                { return email; }
+    public void    setEmail(String v)        { this.email = v; }
+    public String  getPasswordHash()         { return passwordHash; }
+    public void    setPasswordHash(String v) { this.passwordHash = v; }
+    public String  getFullName()             { return fullName; }
+    public void    setFullName(String v)     { this.fullName = v; }
+    public String  getIdNumber()             { return idNumber; }
+    public void    setIdNumber(String v)     { this.idNumber = v; }
+    public UserRole getRole()                { return role; }
+    public void    setRole(UserRole v)       { this.role = v; }
+    public Instant getCreatedAt()            { return createdAt; }
+    public byte[]  getPhotoData()            { return photoData; }
+    public void    setPhotoData(byte[] v)    { this.photoData = v; }
+    public String  getPhotoType()            { return photoType; }
+    public void    setPhotoType(String v)    { this.photoType = v; }
 
     // ── UserDetails ────────────────────────────────────────────
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
-    @Override public String getPassword()              { return passwordHash; }
-    @Override public String getUsername()              { return email; }
-    @Override public boolean isAccountNonExpired()     { return true; }
-    @Override public boolean isAccountNonLocked()      { return true; }
-    @Override public boolean isCredentialsNonExpired() { return true; }
-    @Override public boolean isEnabled()               { return true; }
+    @Override public String  getPassword()              { return passwordHash; }
+    @Override public String  getUsername()              { return email; }
+    @Override public boolean isAccountNonExpired()      { return true; }
+    @Override public boolean isAccountNonLocked()       { return true; }
+    @Override public boolean isCredentialsNonExpired()  { return true; }
+    @Override public boolean isEnabled()                { return true; }
 
     // ── Builder ────────────────────────────────────────────────
     public static Builder builder() { return new Builder(); }
@@ -77,12 +97,12 @@ public class User implements UserDetails {
         private String email, passwordHash, fullName, idNumber;
         private UserRole role = UserRole.STUDENT;
 
-        public Builder id(UUID v)           { this.id = v; return this; }
-        public Builder email(String v)      { this.email = v; return this; }
+        public Builder id(UUID v)            { this.id = v;           return this; }
+        public Builder email(String v)       { this.email = v;        return this; }
         public Builder passwordHash(String v){ this.passwordHash = v; return this; }
-        public Builder fullName(String v)   { this.fullName = v; return this; }
-        public Builder idNumber(String v)   { this.idNumber = v; return this; }
-        public Builder role(UserRole v)     { this.role = v; return this; }
+        public Builder fullName(String v)    { this.fullName = v;     return this; }
+        public Builder idNumber(String v)    { this.idNumber = v;     return this; }
+        public Builder role(UserRole v)      { this.role = v;         return this; }
 
         public User build() {
             User u = new User();

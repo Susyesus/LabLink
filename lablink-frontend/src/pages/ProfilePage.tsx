@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Shield, Calendar, ClipboardList } from 'lucide-react';
+import { User, Mail, Shield, Calendar, ClipboardList, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import { borrowApi } from '@/services/api';
 import { useAuthStore } from '@/store/authStore';
@@ -60,6 +61,17 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
+
+          {/* Settings link */}
+          <Link
+            to="/settings"
+            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg
+                       border border-lab-border text-sm font-body text-lab-muted
+                       hover:text-lab-primary hover:border-lab-primary/40 hover:bg-lab-primary/5
+                       transition-all duration-150"
+          >
+            <Settings size={14} /> Edit Profile &amp; Settings
+          </Link>
 
           {/* Stats */}
           <div className="pt-4 border-t border-lab-border grid grid-cols-2 gap-3">
