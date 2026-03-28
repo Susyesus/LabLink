@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ── Core Dark Palette (matching design spec) ─────────── -->
+    <color name="bg">#0D0F14</color>
+    <color name="surface">#161B26</color>
+    <color name="surface2">#1C2333</color>
+    <color name="border">#232A3A</color>
+    <color name="muted">#8A94A6</color>
+    <color name="text">#E8ECF4</color>
+    <color name="primary">#3B82F6</color>
+    <color name="accent">#06B6D4</color>
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
+    <color name="danger">#EF4444</color>
+
+    <!-- ── Derived ──────────────────────────────────────────── -->
+    <color name="primary_dark">#080B12</color>
+    <color name="primary_15">#263B82F6</color>
+    <color name="primary_12">#1F3B82F6</color>
+    <color name="primary_08">#143B82F6</color>
+    <color name="accent_10">#1A06B6D4</color>
+    <color name="danger_05">#0DEF4444</color>
+    <color name="danger_15">#26EF4444</color>
+    <color name="success_12">#1F10B981</color>
+    <color name="warning_10">#1AF59E0B</color>
+
+    <!-- ── Status Badges ────────────────────────────────────── -->
+    <color name="badge_avail_bg">#1F10B981</color>
+    <color name="badge_avail_border">#4010B981</color>
+    <color name="badge_inuse_bg">#1FEF4444</color>
+    <color name="badge_inuse_border">#40EF4444</color>
+    <color name="badge_maint_bg">#1FF59E0B</color>
+    <color name="badge_maint_border">#40F59E0B</color>
+
+    <!-- ── Splash ───────────────────────────────────────────── -->
+    <color name="splash_background">#080B12</color>
+
+    <!-- ── Text shorthands (referenced by themes/layouts) ──── -->
+    <color name="text_primary">#E8ECF4</color>
+    <color name="text_secondary">#8A94A6</color>
+    <color name="text_hint">#8A94A6</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_accent">#FFFFFF</color>
+
+    <!-- ── Input Fields ─────────────────────────────────────── -->
+    <color name="input_background">#0D0F14</color>
+    <color name="input_stroke">#232A3A</color>
+    <color name="input_stroke_focused">#3B82F6</color>
+
+    <!-- ── Divider ──────────────────────────────────────────── -->
+    <color name="divider">#232A3A</color>
+
+    <!-- ── Card ─────────────────────────────────────────────── -->
+    <color name="card_background">#161B26</color>
+
+    <color name="error">#EF4444</color>
+    <color name="error_light">#1FEF4444</color>
+    <color name="background">#0D0F14</color>
+
+    <!-- ── Transparent for ripple ───────────────────────────── -->
+    <color name="ripple">#203B82F6</color>
+</resources>
