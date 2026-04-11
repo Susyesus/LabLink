@@ -17,7 +17,7 @@
         tools:targetApi="34">
 
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".feature.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.LabLink.Splash">
             <intent-filter>
@@ -26,17 +26,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.auth.LoginActivity"
+        <activity android:name=".feature.auth.ui.LoginActivity"
             android:exported="false" />
-        <activity android:name=".ui.auth.RegisterActivity"
+        <activity android:name=".feature.auth.ui.RegisterActivity"
             android:exported="false" />
-        <activity android:name=".ui.dashboard.DashboardActivity"
+        <activity android:name=".feature.equipment.ui.DashboardActivity"
             android:exported="false" />
-        <activity android:name=".ui.profile.ProfileActivity"
+        <activity android:name=".feature.profile.ui.ProfileActivity"
             android:exported="false" />
-        <activity android:name=".ui.profile.EditProfileActivity"
+        <activity android:name=".feature.profile.ui.EditProfileActivity"
             android:exported="false" />
-        <activity android:name=".ui.profile.ChangePasswordActivity"
+        <activity android:name=".feature.profile.ui.ChangePasswordActivity"
             android:exported="false" />
 
     </application>
