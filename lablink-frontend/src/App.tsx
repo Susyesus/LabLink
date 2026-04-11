@@ -1,20 +1,20 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
-import { AppLayout }       from '@/components/layout/AppLayout';
-import { ProtectedRoute, AdminRoute, PublicRoute } from '@/components/layout/RouteGuards';
+import { AppLayout }       from '@/core/components/layout/AppLayout';
+import { ProtectedRoute, AdminRoute, PublicRoute } from '@/core/components/layout/RouteGuards';
 
-import LoginPage            from '@/pages/LoginPage';
-import RegisterPage         from '@/pages/RegisterPage';
-import AdminRegisterPage    from '@/pages/AdminRegisterPage';
-import CatalogPage          from '@/pages/CatalogPage';
-import EquipmentDetailPage  from '@/pages/EquipmentDetailPage';
-import MyBorrowsPage        from '@/pages/MyBorrowsPage';
-import ProfilePage          from '@/pages/ProfilePage';
-import AdminDashboardPage   from '@/pages/AdminDashboardPage';
-import AdminEquipmentPage   from '@/pages/AdminEquipmentPage';
-import AdminBorrowsPage     from '@/pages/AdminBorrowsPage';
-import SettingsPage         from '@/pages/SettingsPage';
+import LoginPage            from '@/features/auth/pages/LoginPage';
+import RegisterPage         from '@/features/auth/pages/RegisterPage';
+import AdminRegisterPage    from '@/features/auth/pages/AdminRegisterPage';
+import CatalogPage          from '@/features/equipment/pages/CatalogPage';
+import EquipmentDetailPage  from '@/features/equipment/pages/EquipmentDetailPage';
+import MyBorrowsPage        from '@/features/borrow/pages/MyBorrowsPage';
+import ProfilePage          from '@/features/profile/pages/ProfilePage';
+import AdminDashboardPage   from '@/features/admin/pages/AdminDashboardPage';
+import AdminEquipmentPage   from '@/features/admin/pages/AdminEquipmentPage';
+import AdminBorrowsPage     from '@/features/admin/pages/AdminBorrowsPage';
+import SettingsPage         from '@/features/profile/pages/SettingsPage';
 
 export default function App() {
   return (
