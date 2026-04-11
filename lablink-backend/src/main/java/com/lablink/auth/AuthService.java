@@ -1,5 +1,9 @@
 package com.lablink.auth;
 
+import com.lablink.core.User;
+import com.lablink.core.UserRole;
+import com.lablink.core.UserRepository;
+
 import com.lablink.auth.dto.*;
 import com.lablink.exception.BusinessException;
 import com.lablink.security.JwtService;

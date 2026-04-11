@@ -1,4 +1,4 @@
-package com.lablink.auth;
+package com.lablink.core;
 
 public enum UserRole {
     STUDENT,

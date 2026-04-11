@@ -1,6 +1,6 @@
 package com.lablink.exception;
 
-import com.lablink.common.ApiResponse;
+import com.lablink.core.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

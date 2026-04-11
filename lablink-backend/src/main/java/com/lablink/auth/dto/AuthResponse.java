@@ -1,7 +1,7 @@
 package com.lablink.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.lablink.auth.UserRole;
+import com.lablink.core.UserRole;
 import java.util.UUID;
 
 public class AuthResponse {

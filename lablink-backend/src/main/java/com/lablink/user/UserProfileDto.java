@@ -1,7 +1,7 @@
 package com.lablink.user;
 
-import com.lablink.auth.User;
-import com.lablink.auth.UserRole;
+import com.lablink.core.User;
+import com.lablink.core.UserRole;
 
 import java.time.Instant;
 import java.util.UUID;

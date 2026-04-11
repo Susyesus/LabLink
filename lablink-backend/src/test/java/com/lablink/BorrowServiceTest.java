@@ -1,8 +1,8 @@
 package com.lablink;
 
-import com.lablink.auth.User;
-import com.lablink.auth.UserRepository;
-import com.lablink.auth.UserRole;
+import com.lablink.core.User;
+import com.lablink.core.UserRepository;
+import com.lablink.core.UserRole;
 import com.lablink.borrow.*;
 import com.lablink.equipment.*;
 import com.lablink.exception.BusinessException;
@@ -102,7 +102,6 @@ class BorrowServiceTest {
 
     @Test
     void borrow_returnDateExceeds7Days_throwsBadRequest() {
-        when(equipmentRepository.findById(equipmentId)).thenReturn(Optional.of(testEquipment));
 
         BorrowRequest req = new BorrowRequest();
         req.setEquipmentId(equipmentId);

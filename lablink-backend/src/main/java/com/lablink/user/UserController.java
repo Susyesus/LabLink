@@ -1,7 +1,7 @@
 package com.lablink.user;
 
-import com.lablink.auth.User;
-import com.lablink.common.ApiResponse;
+import com.lablink.core.User;
+import com.lablink.core.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

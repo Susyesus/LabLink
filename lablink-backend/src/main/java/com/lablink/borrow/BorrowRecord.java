@@ -1,6 +1,6 @@
 package com.lablink.borrow;
 
-import com.lablink.auth.User;
+import com.lablink.core.User;
 import com.lablink.equipment.Equipment;
 import jakarta.persistence.*;
 import java.time.Instant;

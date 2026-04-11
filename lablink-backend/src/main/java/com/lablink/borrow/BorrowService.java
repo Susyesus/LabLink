@@ -1,7 +1,7 @@
 package com.lablink.borrow;
 
-import com.lablink.auth.User;
-import com.lablink.auth.UserRepository;
+import com.lablink.core.User;
+import com.lablink.core.UserRepository;
 import com.lablink.equipment.Equipment;
 import com.lablink.equipment.EquipmentRepository;
 import com.lablink.equipment.EquipmentStatus;

@@ -1,7 +1,7 @@
 package com.lablink.user;
 
-import com.lablink.auth.User;
-import com.lablink.auth.UserRepository;
+import com.lablink.core.User;
+import com.lablink.core.UserRepository;
 import com.lablink.exception.BusinessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

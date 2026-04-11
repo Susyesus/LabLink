@@ -1,4 +1,4 @@
-package com.lablink.common;
+package com.lablink.core;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Instant;

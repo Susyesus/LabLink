@@ -1,4 +1,4 @@
-package com.lablink.auth;
+package com.lablink.core;
 
 import com.lablink.borrow.BorrowRecord;
 import jakarta.persistence.*;

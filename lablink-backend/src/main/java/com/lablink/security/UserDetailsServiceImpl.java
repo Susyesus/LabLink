@@ -1,6 +1,6 @@
 package com.lablink.security;
 
-import com.lablink.auth.UserRepository;
+import com.lablink.core.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

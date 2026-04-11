@@ -1,7 +1,8 @@
 package com.lablink.auth;
 
 import com.lablink.auth.dto.*;
-import com.lablink.common.ApiResponse;
+import com.lablink.core.ApiResponse;
+import com.lablink.core.User;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
