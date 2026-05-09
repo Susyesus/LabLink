@@ -1,0 +1,45 @@
+# ==========================================
+# Render Blueprint — LabLink Backend
+# ==========================================
+# Docs: https://docs.render.com/blueprint-spec
+#
+# Usage:
+#   1. Push this file to the repo root.
+#   2. In the Render Dashboard → New → Blueprint → select this repo.
+#   3. Render will auto-detect render.yaml and create the service.
+#   4. Fill in the env var values in the Render Dashboard after creation.
+
+services:
+  - type: web
+    name: lablink-backend
+    runtime: docker
+    repo: https://github.com/Susyesus/LabLink   # ← update if your repo URL differs
+    rootDir: lablink-backend
+    dockerfilePath: ./Dockerfile
+    region: singapore                             # closest to PH — change if needed
+    plan: free                                    # free tier; upgrade as needed
+    branch: main                                  # ← update to your default branch
+
+    # Health check — Render pings this to know the service is alive
+    healthCheckPath: /api/v1/equipment
+
+    envVars:
+      # ── Spring Profile ──────────────────────────────────────
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      # ── Supabase Database ───────────────────────────────────
+      - key: SUPABASE_DB_URL
+        sync: false   # manually set in Render dashboard
+      - key: SUPABASE_DB_USER
+        sync: false
+      - key: SUPABASE_DB_PASSWORD
+        sync: false
+
+      # ── JWT ─────────────────────────────────────────────────
+      - key: JWT_SECRET
+        generateValue: true   # Render auto-generates a random value
+
+      # ── CORS — must include your Vercel frontend URL ────────
+      - key: APP_CORS_ALLOWED_ORIGINS
+        value: https://lablink.vercel.app,http://localhost:3000,http://localhost:5173
