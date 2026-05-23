@@ -30,15 +30,12 @@ export function Sidebar() {
 
   // Fetch the profile photo if the user has one
   const fetchPhoto = (revoked: { current: boolean }) => {
-    apiClient.get('/users/me', { timeout: 30_000 })
+    apiClient.get('/users/me')
       .then((res) => {
         if (revoked.current) return;
         const profile = res.data?.data;
         if (profile?.hasPhoto) {
-          return apiClient.get('/users/me/photo', {
-            responseType: 'blob',
-            timeout: 30_000,
-          });
+          return apiClient.get('/users/me/photo', { responseType: 'blob' });
         }
         return null;
       })
