@@ -28,19 +28,44 @@ export function Sidebar() {
   const nav = user?.role === 'ADMIN' ? adminNav : studentNav;
   const [photoSrc, setPhotoSrc] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!user?.id) return;
-    let revoked = false;
-    apiClient.get('/users/me/photo', { responseType: 'blob' })
+  // Fetch the profile photo if the user has one
+  const fetchPhoto = (revoked: { current: boolean }) => {
+    apiClient.get('/users/me', { timeout: 30_000 })
       .then((res) => {
-        if (revoked) return;
-        const url = URL.createObjectURL(res.data);
-        setPhotoSrc(url);
+        if (revoked.current) return;
+        const profile = res.data?.data;
+        if (profile?.hasPhoto) {
+          return apiClient.get('/users/me/photo', {
+            responseType: 'blob',
+            timeout: 30_000,
+          });
+        }
+        return null;
+      })
+      .then((photoRes) => {
+        if (revoked.current) return;
+        if (photoRes) {
+          setPhotoSrc(URL.createObjectURL(photoRes.data));
+        }
       })
       .catch(() => {
-        if (!revoked) setPhotoSrc(null);
+        if (!revoked.current) setPhotoSrc(null);
       });
-    return () => { revoked = true; };
+  };
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const revoked = { current: false };
+    fetchPhoto(revoked);
+
+    // Listen for photo-upload events from SettingsPage so the sidebar updates immediately
+    const onPhotoUpdated = () => fetchPhoto(revoked);
+    window.addEventListener('lablink:photo-updated', onPhotoUpdated);
+
+    return () => {
+      revoked.current = true;
+      window.removeEventListener('lablink:photo-updated', onPhotoUpdated);
+    };
   }, [user?.id]);
 
   return (

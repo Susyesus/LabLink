@@ -352,6 +352,8 @@ function PhotoTab({
         setPreview(null);
         setFile(null);
         toast.success('Profile photo updated.');
+        // Notify the Sidebar to refresh its profile picture
+        window.dispatchEvent(new Event('lablink:photo-updated'));
       }
     } catch (err) {
       toast.error(extractApiError(err));
