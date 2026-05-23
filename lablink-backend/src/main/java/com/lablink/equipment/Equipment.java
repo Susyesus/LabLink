@@ -3,6 +3,8 @@ package com.lablink.equipment;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "equipment")
@@ -26,7 +28,8 @@ public class Equipment {
     private String serialNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(nullable = false, columnDefinition = "equipment_status")
     private EquipmentStatus status = EquipmentStatus.AVAILABLE;
 
     @Column(name = "image_url", length = 500)

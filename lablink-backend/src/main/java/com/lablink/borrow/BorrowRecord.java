@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "borrow_records")
@@ -33,7 +35,8 @@ public class BorrowRecord {
     private Instant actualReturnDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(nullable = false, columnDefinition = "borrow_status")
     private BorrowStatus status = BorrowStatus.ACTIVE;
 
     @Column(columnDefinition = "text")
