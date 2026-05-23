@@ -5,7 +5,7 @@ import { userApi } from '@/features/profile/api';
 import { useAuthStore } from '@/features/auth/store/authStore';
 import { Spinner } from '@/core/components/ui';
 import { PageHeader } from '@/core/components/layout/Sidebar';
-import { extractApiError } from '@/core/api/apiClient';
+import { apiClient, extractApiError } from '@/core/api/apiClient';
 import type { UserProfile } from '@/features/profile/types';
 
 type Tab = 'profile' | 'password' | 'photo';
@@ -316,14 +316,9 @@ function PhotoTab({
 
   useEffect(() => {
     if (profile?.hasPhoto) {
-      // Fetch the photo as a blob so the auth header is sent
-      const token = localStorage.getItem('ll_access_token');
-      const base  = (window as any).__VITE_API_URL__ ?? 'http://localhost:8080/api/v1';
-      fetch(`${base}/users/me/photo`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(r => r.blob())
-        .then(b => setPhotoSrc(URL.createObjectURL(b)))
+      // Fetch the photo as a blob via apiClient so auth interceptors handle tokens
+      apiClient.get('/users/me/photo', { responseType: 'blob' })
+        .then((res) => setPhotoSrc(URL.createObjectURL(res.data)))
         .catch(() => setPhotoSrc(null));
     }
   }, [profile?.hasPhoto]);

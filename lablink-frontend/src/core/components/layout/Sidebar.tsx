@@ -7,6 +7,7 @@ import {
 import { useAuthStore } from '@/features/auth/store/authStore';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ThemeToggle } from '@/core/components/ui/ThemeToggle';
+import { apiClient } from '@/core/api/apiClient';
 
 const studentNav = [
   { to: '/catalog',  label: 'Equipment',  icon: LayoutGrid },
@@ -28,13 +29,18 @@ export function Sidebar() {
   const [photoSrc, setPhotoSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('ll_access_token');
-    if (!token) return;
-    const base = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api/v1';
-    fetch(`${base}/users/me/photo`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.ok ? r.blob() : Promise.reject())
-      .then(b => setPhotoSrc(URL.createObjectURL(b)))
-      .catch(() => setPhotoSrc(null));
+    if (!user?.id) return;
+    let revoked = false;
+    apiClient.get('/users/me/photo', { responseType: 'blob' })
+      .then((res) => {
+        if (revoked) return;
+        const url = URL.createObjectURL(res.data);
+        setPhotoSrc(url);
+      })
+      .catch(() => {
+        if (!revoked) setPhotoSrc(null);
+      });
+    return () => { revoked = true; };
   }, [user?.id]);
 
   return (

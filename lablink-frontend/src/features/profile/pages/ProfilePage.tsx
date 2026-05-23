@@ -8,7 +8,7 @@ import { FullPageSpinner, BorrowStatusBadge } from '@/core/components/ui';
 import { userApi } from '@/features/profile/api';
 import type { BorrowRecord } from '@/features/borrow/types';
 import { PageHeader } from '@/core/components/layout/Sidebar';
-import { extractApiError } from '@/core/api/apiClient';
+import { apiClient, extractApiError } from '@/core/api/apiClient';
 import toast from 'react-hot-toast';
 
 export default function ProfilePage() {
@@ -29,11 +29,8 @@ export default function ProfilePage() {
         if (profRes?.data.success && profRes.data.data) {
           const fetchedProfile = profRes.data.data;
           if (fetchedProfile.hasPhoto) {
-            const token = localStorage.getItem('ll_access_token');
-            const base  = import.meta.env.VITE_API_URL ?? '/api/v1';
-            fetch(`${base}/users/me/photo`, { headers: { Authorization: `Bearer ${token}` } })
-              .then(r => r.blob())
-              .then(b => setPhotoSrc(URL.createObjectURL(b)))
+            apiClient.get('/users/me/photo', { responseType: 'blob' })
+              .then((res) => setPhotoSrc(URL.createObjectURL(res.data)))
               .catch(() => {});
           }
         }
